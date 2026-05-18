@@ -1,0 +1,24 @@
+pipeline:
+  name: Azure-ETL-Factory
+  version: "1.0"
+  description: "Batch ETL pipeline for retail sales with ADF orchestration"
+
+paths:
+  landing: "/mnt/datalake/bronze/retail/sales/"
+  bronze: "/mnt/datalake/bronze/retail_sales_delta"
+  silver: "/mnt/datalake/silver/retail_sales_clean"
+  gold_store: "/mnt/datalake/gold/store_daily_performance"
+  gold_category: "/mnt/datalake/gold/category_trends"
+  gold_regional: "/mnt/datalake/gold/regional_revenue"
+
+adf:
+  pipeline_name: "pipeline_daily_retail_etl"
+  trigger: "daily_0600_utc"
+  retry_count: 2
+  retry_interval_seconds: 300
+  timeout: "01:00:00"
+
+optimization:
+  bronze_partition: "sale_date"
+  silver_partition: "sale_month"
+  z_order_columns: ["store_id", "sale_timestamp"]
